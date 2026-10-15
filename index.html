@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¿Quieres salir conmigo?</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #ff758c, #ff7eb3);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* Contenedor de las modales / tarjetas */
+        .modal-container {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 90%;
+            max-width: 420px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .modal {
+            display: none;
+        }
+
+        .modal.active {
+            display: block;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        h2 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 1.4rem;
+        }
+
+        p {
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
+        input[type="text"], select, input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            outline: none;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+            background-color: #fafafa;
+        }
+
+        input[type="text"]:focus, select:focus {
+            border-color: #ff758c;
+            background-color: #fff;
+        }
+
+        /* Estilo personalizado para el input de archivo */
+        input[type="file"] {
+            font-size: 0.85rem;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 10px;
+            position: relative;
+            min-height: 50px;
+        }
+
+        button {
+            padding: 10px 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .btn-yes {
+            background-color: #2ecc71;
+            color: white;
+            box-shadow: 0 4px 10px rgba(46, 204, 113, 0.3);
+        }
+
+        .btn-yes:hover {
+            background-color: #27ae60;
+            transform: scale(1.05);
+        }
+
+        /* Botón No con posición absoluta para que vuele por la pantalla */
+        .btn-no {
+            background-color: #e74c3c;
+            color: white;
+            box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);
+            position: relative;
+            transition: 0.1s ease-out;
+        }
+
+        .emoji {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .datos-pago {
+            background: #fff4f6;
+            border: 2px dashed #ff758c;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            color: #444;
+            text-align: left;
+        }
+
+        .datos-pago b {
+            color: #d63031;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="modal-container">
+
+        <!-- MODAL 1: La pregunta trampa -->
+        <div class="modal active" id="modal-1">
+            <div class="emoji">🥺</div>
+            <h2>¿Quieres salir conmigo?</h2>
+            <div class="btn-group" id="group-1">
+                <button class="btn-yes" onclick="siguienteModal(2)">Sí</button>
+                <button class="btn-no" id="btn-no-1" onmouseover="moverBoton(this)" onclick="moverBoton(this)">No</button>
+            </div>
+        </div>
+
+        <!-- MODAL 2: Selección de Día -->
+        <div class="modal" id="modal-2">
+            <div class="emoji">📅</div>
+            <h2>¡Sabía que dirías que sí! 😎</h2>
+            <p>Selecciona el día que tengas libre para la cita:</p>
+            <select id="dia-cita">
+                <option value="Viernes por la tarde">Viernes por la tarde</option>
+                <option value="Sábado">Sábado</option>
+                <option value="Domingo">Domingo</option>
+                <option value="Cualquier día, soy libre">Cualquier día, soy libre</option>
+            </select>
+            <button class="btn-yes" style="width: 100%;" onclick="siguienteModal(3)">Siguiente</button>
+        </div>
+
+        <!-- MODAL 3: Elegir la comida -->
+        <div class="modal" id="modal-3">
+            <div class="emoji">🍦</div>
+            <h2>¿Qué quieres comer?</h2>
+            <select id="comida-cita">
+                <option value="Helados">Helados 🍦</option>
+                <option value="Pizza">Pizza 🍕</option>
+                <option value="Pan con cambur">Pan con cambur 🍌</option>
+            </select>
+            <button class="btn-yes" style="width: 100%;" onclick="siguienteModal(4)">Siguiente</button>
+        </div>
+
+        <!-- MODAL 4: Los datos de transferencia y pago -->
+        <div class="modal" id="modal-4">
+            <div class="emoji">💳</div>
+            <h2>Requisito indispensable</h2>
+            <p>Para confirmar la salida y asegurar que no me vas a dejar plantado, debes realizar el pago móvil correspondiente. Aquí los datos:</p>
+            
+            <div class="datos-pago">
+                <p style="margin-bottom: 5px;"><b>Cédula:</b> 30697863</p>
+                <p style="margin-bottom: 5px;"><b>Teléfono:</b> 04269742857</p>
+                <p style="margin-bottom: 0;"><b>Banco:</b> 0102 (Banco de Venezuela)</p>
+            </div>
+
+            <p style="font-size: 0.85rem; margin-bottom: 10px;">Sube tu comprobante de pago:</p>
+            <input type="file" id="comprobante" accept="image/*">
+            
+            <button class="btn-yes" style="width: 100%;" onclick="validarPago()">Confirmar Cita</button>
+        </div>
+
+        <!-- MODAL 5: Final feliz -->
+        <div class="modal" id="modal-5">
+            <div class="emoji">🚀</div>
+            <h2>¡Cita agendada con éxito!</h2>
+            <p id="resumen-texto" style="color: #333; font-weight: 500;"></p>
+            
+        </div>
+
+    </div>
+
+    <script>
+        // Función para cambiar de modal
+        function siguienteModal(numeroModal) {
+            // Ocultar todas las modales
+            const modales = document.querySelectorAll('.modal');
+            modales.forEach(m => m.classList.remove('active'));
+
+            // Mostrar la modal correspondiente
+            document.getElementById(`modal-${numeroModal}`).classList.add('active');
+
+            // Si llegamos a la última modal, armamos el resumen
+            if (numeroModal === 5) {
+                const dia = document.getElementById('dia-cita').value;
+                const comida = document.getElementById('comida-cita').value;
+                document.getElementById('resumen-texto').innerHTML = `Todo listo. Quedamos para el <b>${dia}</b> a comer <b>${comida}</b>. ¡Pilas con el pago, no hay devolución! 🤭`;
+            }
+        }
+
+        // Truco para mover el botón de "No" aleatoriamente
+        function moverBoton(btn) {
+            btn.style.position = 'fixed';
+            
+            const maxX = window.innerWidth - btn.offsetWidth - 50;
+            const maxY = window.innerHeight - btn.offsetHeight - 50;
+
+            const randomX = Math.max(20, Math.floor(Math.random() * maxX));
+            const randomY = Math.max(20, Math.floor(Math.random() * maxY));
+
+            btn.style.left = `${randomX}px`;
+            btn.style.top = `${randomY}px`;
+        }
+
+        // Validación para obligar a subir el comprobante (o vacilar si no lo sube)
+        function validarPago() {
+            const inputArchivo = document.getElementById('comprobante');
+            if (inputArchivo.files.length === 0) {
+                alert("¡Ey! ¿Y el comprobante? Sin pago no hay reservación, no me intentes tumbar la vuelta 😂");
+                return;
+            }
+            siguienteModal(5);
+        }
+
+        function reiniciar() {
+            // Regresar el botón "No" a su sitio original
+            const btnNo = document.getElementById('btn-no-1');
+            btnNo.style.position = 'relative';
+            btnNo.style.left = 'auto';
+            btnNo.style.top = 'auto';
+            
+            // Limpiar input de archivo
+            document.getElementById('comprobante').value = '';
+            
+            siguienteModal(1);
+        }
+    </script>
+</body>
+</html>
